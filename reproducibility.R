@@ -1,6 +1,5 @@
 # Oikos workshop - reproducibility
 
-
 library(usethis)
 
 usethis::use_git()
