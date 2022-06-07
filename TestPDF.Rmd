@@ -1,0 +1,39 @@
+---
+title: "TestPDF"
+author: "Mariana P Braga"
+date: "`r Sys.Date()`"
+output:
+  bookdown::pdf_document2:
+    fig_caption: true
+    toc: false
+    keep_tex: true
+bibliography: biblio.bib
+---
+
+# Introduction
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+library(tidyverse)
+library(kableExtra)
+library(DT)
+library(plotly)
+knitr::read_chunk('ReusableChunks.R')
+```
+
+```{r read-dataset, echo=FALSE}
+```
+
+The dataset we are using has `r nrow(Species)`, observations. You can explore the dataset in table \@ref(tab:datatable).
+
+
+
+```{r species2}
+```
+
+We can see the relationship between anual precipitation and abundanca for all four species in \@ref(fig:Abundance)
+
+```{r Abundance}
+```
+
+# References

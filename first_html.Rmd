@@ -11,9 +11,14 @@ csl: ecology.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F,comment = "#>")
 library(tidyverse)
 library(kableExtra)
+library(DT)
+library(plotly)
+library(gapminder)
+library(leaflet)
+library(crosstalk)
 ```
 
 # Example
@@ -33,5 +38,109 @@ kbl(mtcars, caption = "A nice table of mtcars") %>%
   kable_paper() %>% 
   scroll_box(width = "800px", height = "500px")
 ```
+
+## DT tables
+
+```{r dt_table}
+# Extensions to reorder columns and to add buttons
+Test <- DT::datatable(Species_dataset, extensions = c('Buttons', 'ColReorder'),
+          caption = 'Species abundances and explaining variables.',
+          ## You can filter the data on top
+            filter = "top",
+          ## https://datatables.net/reference/option/dom
+            options = list(dom = 'Blfrtip',
+          ## you can reorder columns
+                            colReorder = TRUE,
+          ## You can scroll de table
+                          scrollX='400px',
+                           scrollY='200px',
+          ## you can download or take away variables
+                           buttons = c('copy', 'csv', 'excel', I('colvis')),
+          ### how long you can make tables
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+                                             
+# round the digits of these columns
+Test %>%
+    formatRound(columns = c("lon", "lat", "bio_1",
+        "bio_2", "bio_3", "bio_4", "bio_5", "bio_6",
+        "bio_7", "bio_8", "bio_9", "bio_10", "bio_11",
+        "bio_12", "bio_13", "bio_14", "bio_15", "bio_16",
+        "bio_17", "bio_18", "bio_19", "abund_sp1",
+        "abund_sp2", "abund_sp4"), digits = 3)
+```
+
+## Interactive plots with `plotly`
+
+```{r plotly}
+Species2 <- Species_dataset %>%
+    pivot_longer(cols = abund_sp1:abund_sp4, names_to = "Species",
+        values_to = "Abundance") %>%
+    mutate(Species = str_remove_all(Species, "abund_"),
+        Species = str_replace_all(Species, "sp", "Spp "))
+
+G <- ggplot(Species2, aes(x = bio_12, y = Abundance)) +
+    geom_point(aes(color = Species)) + geom_smooth(aes(color = Species)) +
+    theme_bw()
+
+ggplotly(G)
+```
+
+```{r, animation}
+df <- gapminder
+fig <- df %>%
+    plot_ly(x = ~gdpPercap, y = ~lifeExp, size = ~pop,
+        color = ~continent, frame = ~year, text = ~country,
+        hoverinfo = "text", type = "scatter", mode = "markers")
+
+fig <- fig %>%
+    layout(xaxis = list(type = "log"))
+
+fig
+```
+
+```{r, leaflet}
+leaflet(data = Species_dataset) %>%
+    addTiles() %>%
+    addCircles(lng = ~lon, lat = ~lat)
+```
+
+
+```{r, crosstalk}
+sd <- SharedData$new(Species2)
+crosstalk::filter_checkbox("Species", "Species", sd, ~Species)
+crosstalk::filter_slider("Abundance", "Abundance", sd, ~Abundance, step = 10, round = T, min = min(Species2$Abundance), max = max(Species2$Abundance))
+
+Numpal <- colorNumeric("viridis", sort(unique(Species2$Abundance)))
+
+
+leaflet(sd) %>%
+  addTiles() %>% 
+  leaflet::addCircles(lng = ~lon, lat = ~lat, color = ~Numpal(Abundance), popup = ~paste("Abundance:", prettyNum(Abundance, big.mark = ",")), label = ~paste("Abundance:", prettyNum(Abundance, big.mark = ","))) %>%  addLegend("bottomright", pal = Numpal, values = ~Abundance,
+    title = "Abundance",
+    labFormat = labelFormat(big.mark =","),
+    opacity = 1
+  )
+
+G <- ggplot(sd, aes(x = bio_12, y = Abundance)) + geom_point(aes(color = Species)) + theme_bw()
+
+ggplotly(G)
+
+DT::datatable(sd, extensions = c('Buttons', 'ColReorder'),
+          caption = 'Species abundances and explaining variables.',
+            filter = "top",
+            options = list(dom = 'Blfrtip',
+                            colReorder = TRUE,
+                          scrollX='400px',
+                           scrollY='200px',
+                           buttons = c('copy', 'csv', 'excel', I('colvis')),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All")))) %>%
+    formatRound(columns=c("lon", "lat", "bio_1", "bio_2", "bio_3", "bio_4", "bio_5", 
+"bio_6", "bio_7", "bio_8", "bio_9", "bio_10", "bio_11", "bio_12", 
+"bio_13", "bio_14", "bio_15", "bio_16", "bio_17", "bio_18", "bio_19"), digits=3)
+```
+
+
 
 # References
