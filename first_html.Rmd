@@ -1,0 +1,37 @@
+---
+title: "Template HTML"
+author: "Mariana"
+date: "`r format(Sys.time(), '%d/%m, %Y')`"
+output:
+  bookdown::html_document2:
+    fig_caption: true
+    toc: false
+bibliography: biblio.bib
+csl: ecology.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+library(tidyverse)
+library(kableExtra)
+```
+
+# Example
+
+This is a template rmd written in [@cran2022], with extended functionality thanks to the use of bookdown [@Xie_2016]. The use of references is not an enhancement, however the use of crossreferences to show figures and tables is only possible with this package.
+
+As an example check figure \@ref(fig:mpg), and table \@ref(tab:mtcars).
+
+```{r mpg, fig.cap= "This graph shows the relationship between the miles per galon of a car and their horsepower"}
+data("mtcars")
+ggplot(mtcars, aes(x = hp, y = mpg)) + geom_point() + geom_smooth(method = "lm") + theme_bw()
+```
+
+
+```{r mtcars}
+kbl(mtcars, caption = "A nice table of mtcars") %>% 
+  kable_paper() %>% 
+  scroll_box(width = "800px", height = "500px")
+```
+
+# References

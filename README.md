@@ -17,15 +17,19 @@ between the abundances of species 4 and annual mean temperature
 ![Temperature vs Abundance spp
 4](README_files/figure-gfm/plotspp4temp-1.png)
 
-Inline 3,500, the mean temperature in the sites is 2.7.
+Inline example: 3,500, the mean temperature in the sites is 2.7.
 
-<!-- What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so: -->
-<!-- ```{r cars} -->
-<!-- summary(cars) -->
-<!-- ``` -->
-<!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>. -->
-<!-- You can also embed plots, for example: -->
-<!-- ```{r pressure, echo = FALSE} -->
-<!-- plot(pressure) -->
-<!-- ``` -->
-<!-- In that case, don't forget to commit and push the resulting figure files, so they display on GitHub. -->
+Try plotting a table:
+
+    #> # A tibble: 6 × 4
+    #>     lon   lat  bio_1 bio_2
+    #>   <dbl> <dbl>  <dbl> <dbl>
+    #> 1  12.7  63.0 -0.779  8.57
+    #> 2  12.5  60.2  3.45   9.05
+    #> 3  15.8  56.6  6.56   7.85
+    #> 4  27.9  67.7 -1.63   8.68
+    #> 5  17.6  59.6  6.02   7.72
+    #> 6  23.3  60.4  4.78   7.70
+
+The file **first_html.Rmd** is a template of an html document with
+graphs, citations, crossreferences, etc.
